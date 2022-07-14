@@ -1,0 +1,31 @@
+.title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.title svg {
+  margin-left: 4px;
+  fill: #42526e;
+}
+
+.title h5 {
+  margin: 12px 6px;
+  color: #42526e;
+  font-weight: 600;
+}
+
+.paper {
+  height: 4rem;
+  width: 8rem;
+}
+
+.paper img {
+  height: 100%;
+  width: 100%;
+  display: block;
+  border-radius: 2px;
+  object-fit: cover;
+}
