@@ -1,12 +1,12 @@
 import React from "react";
 import styles from "../popular-template/PopularTemplate.module.css";
-import { Grid, Paper } from "@mui/material";
+import { Grid, Paper, Button } from "@mui/material";
 import AutoAwesomeMosaicIcon from "@mui/icons-material/AutoAwesomeMosaic";
 
 const DUMMY_TEMPLATES = [
   {
     id: 1,
-    title: "title1",
+    title: "title1 zerzerzerzerez ezrezr ezrzesrezr",
     image:
       "https://www.windowscentral.com/sites/wpcentral.com/files/styles/large/public/field/image/2021/11/wallpaper-windows-11-se.png",
     content: [
@@ -169,6 +169,8 @@ const PopularTemplate = (props) => {
             <Grid item key={template.id} lg={3}>
               <Paper className={styles.paper}>
                 <img src={template.image} />
+                <Button className={styles["button-modele"]}>Modèle</Button>
+                <p>{template.title}</p>
               </Paper>
             </Grid>
           );
