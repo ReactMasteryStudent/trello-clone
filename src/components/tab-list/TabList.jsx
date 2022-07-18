@@ -9,7 +9,10 @@ const TabList = (props) => {
       {props.list.map((item) => {
         return (
           <Grid item key={item.id}>
-            <Link to={`/${item.id}/${item.title}`}>
+            <Link
+              to={`/${item.id}/${item.title}`}
+              style={{ textDecoration: "none" }}
+            >
               <Paper
                 className={styles.paper}
                 style={{
