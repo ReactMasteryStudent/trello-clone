@@ -1,12 +1,12 @@
 import React from "react";
 import styles from "../popular-template/PopularTemplate.module.css";
-import { Grid, Paper, Button } from "@mui/material";
 import AutoAwesomeMosaicIcon from "@mui/icons-material/AutoAwesomeMosaic";
+import TabList from "../tab-list/TabList";
 
 const DUMMY_TEMPLATES = [
   {
     id: 1,
-    title: "title1 zerzerzerzerez ezrezr ezrzesrezr",
+    title: "Conduite de projet",
     image:
       "https://www.windowscentral.com/sites/wpcentral.com/files/styles/large/public/field/image/2021/11/wallpaper-windows-11-se.png",
     content: [
@@ -36,7 +36,7 @@ const DUMMY_TEMPLATES = [
   },
   {
     id: 5,
-    title: "title1",
+    title: "Modèle Kanban",
     image:
       "https://www.windowscentral.com/sites/wpcentral.com/files/styles/large/public/field/image/2021/11/wallpaper-windows-11-se.png",
     content: [
@@ -66,7 +66,7 @@ const DUMMY_TEMPLATES = [
   },
   {
     id: 2,
-    title: "title2",
+    title: "Tableau de bord d'équipe",
     image:
       "https://img.freepik.com/free-vector/colorful-palm-silhouettes-background_23-2148541792.jpg",
     content: [
@@ -156,26 +156,14 @@ const DUMMY_TEMPLATES = [
   },
 ];
 
-const PopularTemplate = (props) => {
+const PopularTemplate = () => {
   return (
     <div>
       <div className={styles.title}>
         <AutoAwesomeMosaicIcon />
-        <h5>Modèles les plus populaires</h5>
+        <h6>Modèles les plus populaires</h6>
       </div>
-      <Grid container spacing={2}>
-        {DUMMY_TEMPLATES.map((template) => {
-          return (
-            <Grid item key={template.id} lg={3}>
-              <Paper className={styles.paper}>
-                <img src={template.image} />
-                <Button className={styles["button-modele"]}>Modèle</Button>
-                <p>{template.title}</p>
-              </Paper>
-            </Grid>
-          );
-        })}
-      </Grid>
+      <TabList list={DUMMY_TEMPLATES} isModele={true} />
     </div>
   );
 };

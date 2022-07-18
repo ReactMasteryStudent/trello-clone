@@ -7,12 +7,11 @@
 }
 
 .title svg {
-  height: 1rem;
   fill: #42526e;
 }
 
-.title h6 {
-  margin: 12px 0px;
+.title h5 {
+  margin: 12px 6px;
   color: #42526e;
   font-weight: 600;
 }
@@ -20,14 +19,7 @@
 .paper {
   height: 4rem;
   width: 8rem;
-}
-
-.paper img {
-  height: 100%;
-  width: 100%;
-  display: block;
-  border-radius: 2px;
-  object-fit: cover;
+  cursor: pointer;
 }
 
 .button {
@@ -50,4 +42,5 @@
   font-size: x-small;
   font-weight: bold;
   padding: 6px;
+  cursor: pointer;
 }
