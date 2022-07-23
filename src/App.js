@@ -1,5 +1,5 @@
 import "./App.css";
-import WorkSpace from "./components/work-space/WorkSpace";
+import { Header } from './components/Header';
 import { Route, Redirect } from "react-router-dom";
 import Index from "./pages/index/Index";
 import TabDetail from "./pages/tab-detail/TabDetail";
@@ -7,7 +7,7 @@ import TabDetail from "./pages/tab-detail/TabDetail";
 function App() {
   return (
     <>
-      <header></header>
+      <Header />
       <main>
         <Route path="/" exact>
           <Redirect to="/index" />
@@ -20,7 +20,7 @@ function App() {
         </Route>
       </main>
     </>
-  );
-}
+    )
+  }
 
 export default App;
