@@ -1,0 +1,46 @@
+.title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.title svg {
+  fill: #42526e;
+}
+
+.title h5 {
+  margin: 12px 6px;
+  color: #42526e;
+  font-weight: 600;
+}
+
+.paper {
+  height: 4rem;
+  width: 8rem;
+  cursor: pointer;
+}
+
+.button {
+  min-width: 0 !important;
+  font-size: 0.45rem !important;
+  font-weight: 500 !important;
+  color: #42526e !important;
+  text-transform: capitalize !important;
+  background-color: rgba(255, 255, 255, 0.6) !important;
+  padding: 2px 6px !important;
+  border-radius: 3px !important;
+  margin-top: 0 !important;
+  margin-left: 6px !important;
+}
+
+.paper p {
+  margin: 0;
+  color: white;
+  font-weight: 500;
+  font-size: x-small;
+  font-weight: bold;
+  padding: 6px;
+  cursor: pointer;
+}
