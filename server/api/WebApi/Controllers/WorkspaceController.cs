@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WebApi.Database;
+using WebApi.Models;
 
 namespace WebApi.Controllers;
 
@@ -22,5 +23,15 @@ public class WorkspaceController : ControllerBase
     public IActionResult Get()
     {
         return Ok(_manager.Workspace());
+    }
+
+    [HttpPatch]
+    public IActionResult Update([FromBody]Workspace workspace)
+    {
+        if(_manager.Exists(workspace))
+        {
+            return _manager.Update(workspace) ? Ok() : NotFound();
+        }
+        return NotFound();
     }
 }
