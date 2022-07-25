@@ -1,3 +1,4 @@
+using System.Linq;
 using WebApi.Database.Models;
 using WebApi.Models;
 
@@ -14,7 +15,7 @@ public static class SectionConverter
             Position = dbSection.Position
         };
 
-        foreach(var dbCard in dbSection.Cards)
+        foreach(var dbCard in dbSection.Cards.OrderBy(dbCard => dbCard.Position))
         {
             section.Cards.Add(CardConverter.ConvertFromDb(dbCard));
         }

@@ -28,7 +28,7 @@ public class WorkspaceController : ControllerBase
     [HttpPatch]
     public IActionResult Update([FromBody]Workspace workspace)
     {
-        if(_workspaceManager.Exists(workspace))
+        if(_workspaceManager.Exists(workspace.Id))
         {
             var updatedWorkspace = _workspaceManager.Update(workspace);
             return updatedWorkspace is not null ? Ok(updatedWorkspace) : BadRequest();

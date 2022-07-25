@@ -19,9 +19,9 @@ public class WorkspaceManager
         _logger = logger;
     }
 
-    public bool Exists(Workspace workspace)
+    public bool Exists(int workspaceId)
     {
-        return _context.Workspaces.Any(dbWorkspace => dbWorkspace.Id == workspace.Id);
+        return _context.Workspaces.Any(dbWorkspace => dbWorkspace.Id == workspaceId);
     }
 
     public Workspace Workspace()

@@ -1,3 +1,4 @@
+using System.Linq;
 using WebApi.Database.Models;
 using WebApi.Models;
 
@@ -14,7 +15,7 @@ public static class BoardConverter
             Image = dbBoard.Image
         };
 
-        foreach(var dbSection in dbBoard.Sections)
+        foreach(var dbSection in dbBoard.Sections.OrderBy(dbSection => dbSection.Position))
         {
             board.Sections.Add(SectionConverter.ConvertFromDb(dbSection));
         }

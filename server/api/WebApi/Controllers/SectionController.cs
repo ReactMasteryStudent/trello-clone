@@ -11,30 +11,46 @@ public class SectionController : ControllerBase
 {
     private readonly ILogger<SectionController> _logger;
     private readonly SectionManager _sectionManager;
+    private readonly BoardManager _boardManager;
 
-    public SectionController(ILogger<SectionController> logger, SectionManager sectionManager)
+    public SectionController(ILogger<SectionController> logger,
+                             SectionManager sectionManager,
+                             BoardManager boardManager)
     {
         _logger = logger;
         _sectionManager = sectionManager;
+        _boardManager = boardManager;
     }
 
     [HttpPost("{boardId}")]
     public IActionResult Add(int boardId, [FromBody]Section section)
     {
-        var addedSection = _sectionManager.Add(boardId, section);
-        return addedSection is not null ? Ok(addedSection) : BadRequest();
+        if(_boardManager.Exists(boardId))
+        {
+            var addedSection = _sectionManager.Add(boardId, section);
+            return addedSection is not null ? Ok(addedSection) : BadRequest();
+        }
+        return BadRequest();
     }
 
     [HttpPatch]
     public IActionResult Update([FromBody]Section section)
     {
-        var updatedSection = _sectionManager.Update(section);
-        return updatedSection is not null ? Ok(updatedSection) : BadRequest();
+        if(_sectionManager.Exists(section.Id))
+        {
+            var updatedSection = _sectionManager.Update(section);
+            return updatedSection is not null ? Ok(updatedSection) : BadRequest();
+        }
+        return BadRequest();
     }
 
     [HttpDelete("{sectionId}")]
     public IActionResult Delete(int sectionId)
     {
-        return _sectionManager.Delete(sectionId) ? Ok() : BadRequest();
+        if(_sectionManager.Exists(sectionId))
+        {
+            return _sectionManager.Delete(sectionId) ? Ok() : BadRequest();
+        }
+        return BadRequest();
     }
 }

@@ -55,7 +55,7 @@ public class BoardManager
         try
         {
             var dbBoard = _context.Boards.FirstOrDefault(dbBoard => dbBoard.Id == board.Id) ?? throw new NullReferenceException();
-            dbBoard.Image = board.Image;
+            dbBoard.Image = board.Image ?? "";
             dbBoard.Name = board.Name;
             var boardEntry = _context.Boards.Update(dbBoard);
             _context.SaveChanges();

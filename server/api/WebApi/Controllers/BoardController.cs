@@ -28,13 +28,21 @@ public class BoardController : ControllerBase
     [HttpPatch]
     public IActionResult Update([FromBody]Board board)
     {
-        var updatedBoard = _boardManager.Update(board);
-        return updatedBoard is not null ? Ok(updatedBoard) : BadRequest();
+        if(_boardManager.Exists(board.Id))
+        {
+            var updatedBoard = _boardManager.Update(board);
+            return updatedBoard is not null ? Ok(updatedBoard) : BadRequest();
+        }
+        return BadRequest();
     }
 
     [HttpDelete("{boardId}")]
     public IActionResult Delete(int boardId)
     {
-        return _boardManager.Delete(boardId) ? Ok() : BadRequest();
+        if(_boardManager.Exists(boardId))
+        {
+            return _boardManager.Delete(boardId) ? Ok() : BadRequest();
+        }
+        return BadRequest();
     }
 }
