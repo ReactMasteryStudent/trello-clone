@@ -10,4 +10,7 @@ public class DbBoard
     public string Name { get; set; }
     public string Image { get; set; }
     public virtual ICollection<DbSection> Sections { get; set; } = new Collection<DbSection>();
+
+    // Relations
+    public virtual DbWorkspace Workspace { get; set; }
 }

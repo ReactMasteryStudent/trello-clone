@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WebApi.Database;
+using WebApi.Database.Managers;
 using WebApi.Initialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,7 +36,8 @@ builder.Services.AddDbContext<Context>(options =>
     });
 });
 builder.Services.AddTransient<DatabaseInitialization>();
-builder.Services.AddTransient<Manager>();
+builder.Services.AddTransient<WorkspaceManager>();
+builder.Services.AddTransient<BoardManager>();
 builder.Services.AddControllers();
 builder.Services.AddLogging();
 

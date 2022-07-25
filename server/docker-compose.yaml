@@ -3,7 +3,6 @@ services:
     build: ./api/WebApi/
     ports:
       - 5005:80
-      - 5006:443
     depends_on:
       - mysql
   mysql:

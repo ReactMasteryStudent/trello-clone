@@ -7,4 +7,7 @@ public class DbCard
     public string Title { get; set; }
     public int Position { get; set; }
     public string Description { get; set; }
+
+    // Relations
+    public virtual DbSection Section { get; set; }
 }

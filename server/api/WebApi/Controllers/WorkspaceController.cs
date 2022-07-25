@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using WebApi.Database;
+using WebApi.Database.Managers;
 using WebApi.Models;
 
 namespace WebApi.Controllers;
@@ -10,27 +10,28 @@ namespace WebApi.Controllers;
 public class WorkspaceController : ControllerBase
 {
     private readonly ILogger<WorkspaceController> _logger;
-    private readonly Manager _manager;
+    private readonly WorkspaceManager _workspaceManager;
 
-    public WorkspaceController(ILogger<WorkspaceController> logger, Manager manager)
+    public WorkspaceController(ILogger<WorkspaceController> logger, WorkspaceManager workspaceManager)
     {
         _logger = logger;
-        _manager = manager;
+        _workspaceManager = workspaceManager;
     }
 
 
     [HttpGet]
     public IActionResult Get()
     {
-        return Ok(_manager.Workspace());
+        return Ok(_workspaceManager.Workspace());
     }
 
     [HttpPatch]
     public IActionResult Update([FromBody]Workspace workspace)
     {
-        if(_manager.Exists(workspace))
+        if(_workspaceManager.Exists(workspace))
         {
-            return _manager.Update(workspace) ? Ok() : NotFound();
+            var updatedWorkspace = _workspaceManager.Update(workspace);
+            return updatedWorkspace is not null ? Ok(updatedWorkspace) : BadRequest();
         }
         return NotFound();
     }

@@ -10,4 +10,7 @@ public class DbSection
     public string Name { get; set; }
     public int Position { get; set; }
     public virtual ICollection<DbCard> Cards { get; set; } = new Collection<DbCard>();
+
+    // Relations
+    public virtual DbBoard Board { get; set; }
 }
