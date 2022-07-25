@@ -38,6 +38,7 @@ builder.Services.AddDbContext<Context>(options =>
 builder.Services.AddTransient<DatabaseInitialization>();
 builder.Services.AddTransient<WorkspaceManager>();
 builder.Services.AddTransient<BoardManager>();
+builder.Services.AddTransient<SectionManager>();
 builder.Services.AddControllers();
 builder.Services.AddLogging();
 

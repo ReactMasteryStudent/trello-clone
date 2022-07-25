@@ -15,4 +15,21 @@ public class Context : DbContext
     {
 
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<DbBoard>()
+            .HasOne(dbBoard => dbBoard.Workspace)
+            .WithMany(dbWorkspace => dbWorkspace.Boards)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<DbSection>()
+            .HasOne(dbSection => dbSection.Board)
+            .WithMany(dbBoard => dbBoard.Sections)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<DbCard>()
+            .HasOne(dbCard => dbCard.Section)
+            .WithMany(dbSection => dbSection.Cards)
+            .OnDelete(DeleteBehavior.Cascade);
+        base.OnModelCreating(modelBuilder);
+    }
 }
