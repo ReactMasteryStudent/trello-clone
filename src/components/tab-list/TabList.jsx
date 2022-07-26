@@ -10,7 +10,7 @@ const TabList = (props) => {
         return (
           <Grid item key={item.id}>
             <Link
-              to={`/${item.id}/${item.title}`}
+              to={`/${item.id}/${item.name}`}
               style={{ textDecoration: "none" }}
             >
               <Paper
@@ -28,7 +28,7 @@ const TabList = (props) => {
                 {props.isModele === true && (
                   <Button className={styles.button}>Modèle</Button>
                 )}
-                <p>{item.title}</p>
+                <p>{item.name}</p>
               </Paper>
             </Link>
           </Grid>
