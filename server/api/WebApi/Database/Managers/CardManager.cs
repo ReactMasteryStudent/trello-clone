@@ -32,7 +32,9 @@ public class CardManager
         try
         {
             var dbCard = CardConverter.ConvertToDb(card);
-            dbCard.Section = _sectionManager.DbSection(sectionId);
+            var dbSection = _sectionManager.DbSection(sectionId);
+            dbCard.Section = dbSection;
+            dbCard.Position = dbSection.Cards.Count == 0 ? 1 : dbSection.Cards.Max(dbCard => dbCard.Position) + 1;
             var cardEntry = _context.Cards.Add(dbCard);
             _context.SaveChanges();
             return CardConverter.ConvertFromDb(cardEntry.Entity);
@@ -52,6 +54,11 @@ public class CardManager
             var dbCard = _context.Cards.FirstOrDefault(dbCard => dbCard.Id == card.Id) ?? throw new NullReferenceException();
             dbCard.Title = card.Title;
             dbCard.Description = card.Description;
+            if(dbCard.Position != card.Position)
+            {
+                dbCard.Position = ComputePosition(dbCard.Section.Id, card.Position);
+                RefreshPosition(dbCard.Section, dbCard);
+            }
             var cardEntry = _context.Cards.Update(dbCard);
             _context.SaveChanges();
             return CardConverter.ConvertFromDb(cardEntry.Entity);
@@ -79,5 +86,21 @@ public class CardManager
             _logger.LogWarning(e.InnerException?.Message);
             return false;
         }
+    }
+
+    private int ComputePosition(int sectionId, int? position)
+    {
+        var dbSection = _context.Sections.FirstOrDefault(dbSection => dbSection.Id == sectionId) ?? throw new NullReferenceException();
+
+        if(!position.HasValue)
+        {
+
+        }
+        return position!.Value;
+    }
+
+    private void RefreshPosition(DbSection dbSection, DbCard fixedCardPosition)
+    {
+
     }
 }
