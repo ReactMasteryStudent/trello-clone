@@ -33,7 +33,7 @@ public class CardManager
         {
             var dbCard = CardConverter.ConvertToDb(card);
             dbCard.Section = _sectionManager.DbSection(sectionId);
-            dbCard.Position = ComputePosition(sectionId, card.Position);
+            dbCard.Position = ComputePosition(sectionId, card.Position, true);
             var cardEntry = _context.Cards.Add(dbCard);
             _context.SaveChanges();
             return CardConverter.ConvertFromDb(cardEntry.Entity);
@@ -77,6 +77,7 @@ public class CardManager
         {
             var dbCard = _context.Cards.FirstOrDefault(dbCard => dbCard.Id == cardId) ?? throw new NullReferenceException();
             _context.Cards.Remove(dbCard);
+            RefreshPositions(dbCard.Section, dbCard, dbCard.Position, true);
             _context.SaveChanges();
             return true;
         }
@@ -88,10 +89,14 @@ public class CardManager
         }
     }
 
-    private int ComputePosition(int sectionId, int? position)
+    private int ComputePosition(int sectionId, int? position, bool add = false)
     {
         var dbSection = _sectionManager.DbSection(sectionId);
-        var maxPosition = dbSection.Cards.Count == 0 ? 0 : dbSection.Cards.Max(dbCard => dbCard.Position);
+        var maxPosition = 0;
+        if(add)
+            maxPosition = dbSection.Cards.Count == 0 ? 0 : dbSection.Cards.Max(dbCard => dbCard.Position);
+        else
+            maxPosition = dbSection.Cards.Count == 0 || dbSection.Cards.Count == 1 ? 0 : dbSection.Cards.Max(dbCard => dbCard.Position);
         if(!position.HasValue)
         {
             return maxPosition + 1;
@@ -103,7 +108,7 @@ public class CardManager
         return position!.Value;
     }
 
-    private void RefreshPositions(DbSection dbSection, DbCard fixedCardPosition, int emptyPosition)
+    private void RefreshPositions(DbSection dbSection, DbCard fixedCardPosition, int emptyPosition, bool refreshDeleted = false)
     {
         var orderedCards = dbSection.Cards.OrderBy(dbCard => dbCard.Position);
         var positionToAdd = 0;
@@ -119,7 +124,10 @@ public class CardManager
         {
             positionToAdd = -1;
             itemToSkip = orderedCards.Count(dbCard => dbCard.Position < emptyPosition);
-            itemToTake = orderedCards.Skip(itemToSkip).Count(dbCard => dbCard.Position <= fixedCardPosition.Position);
+            if(refreshDeleted)
+                itemToTake = orderedCards.Skip(itemToSkip).Count();
+            else
+                itemToTake = orderedCards.Skip(itemToSkip).Count(dbCard => dbCard.Position <= fixedCardPosition.Position);
         }
         foreach(var card in orderedCards.Skip(itemToSkip).Take(itemToTake))
         {
