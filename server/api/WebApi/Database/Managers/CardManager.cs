@@ -96,7 +96,7 @@ public class CardManager
         if(add)
             maxPosition = dbSection.Cards.Count == 0 ? 0 : dbSection.Cards.Max(dbCard => dbCard.Position);
         else
-            maxPosition = dbSection.Cards.Count == 0 || dbSection.Cards.Count == 1 ? 0 : dbSection.Cards.Max(dbCard => dbCard.Position);
+            maxPosition = dbSection.Cards.Count <= 1 ? 0 : dbSection.Cards.Max(dbCard => dbCard.Position);
         if(!position.HasValue)
         {
             return maxPosition + 1;
