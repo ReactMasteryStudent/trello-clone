@@ -6,6 +6,20 @@ namespace WebApi.Database;
 
 public static class Positions
 {
+    public static int GetCorrectedPosition(IEnumerable<(int, int)> positions, int? newPosition)
+    {
+        var orderedPositions = positions.OrderBy(pair => pair.Item2);
+        if(orderedPositions.Count() == 0)
+            return 1;
+        if(!newPosition.HasValue)
+            return orderedPositions.Last().Item2 + 1;
+        if(newPosition <= 0)
+            return 1;
+        if(newPosition > orderedPositions.Last().Item2 + 1)
+            return orderedPositions.Last().Item2 + 1;
+        return newPosition.Value;
+    }
+
     public static IList<(int, int)> Refresh(IEnumerable<(int , int)> positions, int fixedPositionId)
     {
         var orderedPositions = positions.OrderBy(pair => pair.Item2);
