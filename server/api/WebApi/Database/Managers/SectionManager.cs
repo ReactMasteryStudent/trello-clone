@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using WebApi.Database.Converters;
@@ -37,9 +38,12 @@ public class SectionManager
         try
         {
             var dbSection = SectionConverter.ConvertToDb(section);
-            dbSection.Board = _boardManager.DbBoard(boardId);
+            var dbBoard = _boardManager.DbBoard(boardId);
+            dbSection.Board = dbBoard;
+            dbSection.Position = Positions.GetCorrectedPosition(dbBoard.Sections.Select(dbSec => (dbSec.Id, dbSec.Position)), section.Position, null);
             var sectionEntry = _context.Sections.Add(dbSection);
             _context.SaveChanges();
+            RefreshPositions(dbBoard, sectionEntry.Entity.Id);
             return SectionConverter.ConvertFromDb(sectionEntry.Entity);
         }
         catch(Exception e)
@@ -56,8 +60,10 @@ public class SectionManager
         {
             var dbSection = _context.Sections.FirstOrDefault(dbSection => dbSection.Id == section.Id) ?? throw new NullReferenceException();
             dbSection.Name = section.Name;
+            dbSection.Position = Positions.GetCorrectedPosition(dbSection.Board.Sections.Select(dbSec => (dbSec.Id, dbSec.Position)), section.Position, section.Id);
             var sectionEntry = _context.Sections.Update(dbSection);
             _context.SaveChanges();
+            RefreshPositions(dbSection.Board, sectionEntry.Entity.Id);
             return SectionConverter.ConvertFromDb(sectionEntry.Entity);
         }
         catch (Exception e)
@@ -73,8 +79,10 @@ public class SectionManager
         try
         {
             var dbSection = _context.Sections.FirstOrDefault(dbSection => dbSection.Id == sectionId) ?? throw new NullReferenceException();
+            var dbBoard = dbSection.Board;
             _context.Sections.Remove(dbSection);
             _context.SaveChanges();
+            RefreshDeletedPositions(dbBoard);
             return true;
         }
         catch(Exception e)
@@ -83,5 +91,28 @@ public class SectionManager
             _logger.LogWarning(e.InnerException?.Message);
             return false;
         }
+    }
+
+    private void RefreshPositions(DbBoard dbBoard, int sectionId)
+    {
+        var newPositions = Positions.Refresh(dbBoard.Sections.Select(dbSec => (dbSec.Id, dbSec.Position)), sectionId);
+        UpdatePositions(newPositions);
+    }
+
+    private void RefreshDeletedPositions(DbBoard dbBoard)
+    {
+        var newPositions = Positions.RefreshDeleted(dbBoard.Sections.Select(dbSec => (dbSec.Id, dbSec.Position)));
+        UpdatePositions(newPositions);
+    }
+
+    private void UpdatePositions(IEnumerable<(int, int)> newPositions)
+    {
+        foreach(var pair in newPositions)
+        {
+            var updatedDbSection = _context.Sections.FirstOrDefault(dbSection => dbSection.Id == pair.Item1) ?? throw new NullReferenceException();
+            updatedDbSection.Position = pair.Item2;
+            _context.Sections.Update(updatedDbSection);
+        }
+        _context.SaveChanges();
     }
 }
