@@ -33,9 +33,12 @@ public class CardManager
         try
         {
             var dbCard = CardConverter.ConvertToDb(card);
-            dbCard.Section = _sectionManager.DbSection(sectionId);
+            var dbSection = _sectionManager.DbSection(sectionId);
+            dbCard.Section = dbSection;
+            dbCard.Position = Positions.GetCorrectedPosition(dbSection.Cards.Select(dbCard => (dbCard.Id, dbCard.Position)), card.Position, null);
             var cardEntry = _context.Cards.Add(dbCard);
             _context.SaveChanges();
+            RefreshPositions(dbSection, cardEntry.Entity.Id);
             return CardConverter.ConvertFromDb(cardEntry.Entity);
         }
         catch(Exception e)
@@ -53,12 +56,21 @@ public class CardManager
             var dbCard = _context.Cards.FirstOrDefault(dbCard => dbCard.Id == card.Id) ?? throw new NullReferenceException();
             dbCard.Title = card.Title;
             dbCard.Description = card.Description;
+            var dbSection = dbCard.Section;
+            DbSection? oldSection = null;
             if(newSectionId.HasValue)
             {
-                dbCard.Section = _sectionManager.DbSection(newSectionId.Value);
+                oldSection = dbCard.Section;
+                var newDbSection = _sectionManager.DbSection(newSectionId.Value);
+                dbCard.Section = newDbSection;
+                dbSection = newDbSection;
             }
+            dbCard.Position = Positions.GetCorrectedPosition(dbSection.Cards.Select(dbCard => (dbCard.Id, dbCard.Position)), card.Position, dbCard.Id);
             var cardEntry = _context.Cards.Update(dbCard);
             _context.SaveChanges();
+            RefreshPositions(dbCard.Section, dbCard.Id);
+            if(oldSection is not null)
+                RefreshDeletedPositions(oldSection);
             return CardConverter.ConvertFromDb(cardEntry.Entity);
         }
         catch (Exception e)
@@ -74,8 +86,10 @@ public class CardManager
         try
         {
             var dbCard = _context.Cards.FirstOrDefault(dbCard => dbCard.Id == cardId) ?? throw new NullReferenceException();
+            var dbSection = dbCard.Section;
             _context.Cards.Remove(dbCard);
             _context.SaveChanges();
+            RefreshDeletedPositions(dbSection);
             return true;
         }
         catch(Exception e)
@@ -84,5 +98,28 @@ public class CardManager
             _logger.LogWarning(e.InnerException?.Message);
             return false;
         }
+    }
+
+    private void RefreshPositions(DbSection dbSection, int cardId)
+    {
+        var newPositions = Positions.Refresh(dbSection.Cards.Select(dbCard => (dbCard.Id, dbCard.Position)), cardId);
+        UpdatePositions(newPositions);
+    }
+
+    private void RefreshDeletedPositions(DbSection dbSection)
+    {
+        var newPositions = Positions.RefreshDeleted(dbSection.Cards.Select(dbCard => (dbCard.Id, dbCard.Position)));
+        UpdatePositions(newPositions);
+    }
+
+    private void UpdatePositions(IEnumerable<(int, int)> newPositions)
+    {
+        foreach(var pair in newPositions)
+        {
+            var updatedDbCard = _context.Cards.FirstOrDefault(dbCard => dbCard.Id == pair.Item1) ?? throw new NullReferenceException();
+            updatedDbCard.Position = pair.Item2;
+            _context.Cards.Update(updatedDbCard);
+        }
+        _context.SaveChanges();
     }
 }
