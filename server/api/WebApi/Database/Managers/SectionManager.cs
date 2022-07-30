@@ -110,6 +110,7 @@ public class SectionManager
         foreach(var pair in newPositions)
         {
             var updatedDbSection = _context.Sections.FirstOrDefault(dbSection => dbSection.Id == pair.Item1) ?? throw new NullReferenceException();
+            _logger.LogInformation($"Update section position [Id={pair.Item1}; oldPosition={updatedDbSection.Position}; newPosition={pair.Item2}]");
             updatedDbSection.Position = pair.Item2;
             _context.Sections.Update(updatedDbSection);
         }

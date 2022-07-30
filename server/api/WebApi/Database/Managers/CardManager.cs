@@ -117,6 +117,7 @@ public class CardManager
         foreach(var pair in newPositions)
         {
             var updatedDbCard = _context.Cards.FirstOrDefault(dbCard => dbCard.Id == pair.Item1) ?? throw new NullReferenceException();
+            _logger.LogInformation($"Update card position [Id={pair.Item1}; oldPosition={updatedDbCard.Position}; newPosition={pair.Item2}]");
             updatedDbCard.Position = pair.Item2;
             _context.Cards.Update(updatedDbCard);
         }
