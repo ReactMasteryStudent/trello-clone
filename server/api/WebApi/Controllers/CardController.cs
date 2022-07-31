@@ -33,12 +33,12 @@ public class CardController : ControllerBase
         return BadRequest();
     }
 
-    [HttpPatch]
-    public IActionResult Update([FromBody]Card card)
+    [HttpPatch("{newSectionId?}")]
+    public IActionResult Update([FromBody]Card card, int? newSectionId)
     {
         if(_cardManager.Exists(card.Id))
         {
-            var updatedCard = _cardManager.Update(card);
+            var updatedCard = _cardManager.Update(card, newSectionId);
             return updatedCard is not null ? Ok(updatedCard) : BadRequest();
         }
         return BadRequest();
