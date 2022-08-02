@@ -155,7 +155,7 @@ A section represent a column inside a board, a section contains all cards
 ### Requests
 `POST`(http://localhost:5001/api/section/{boardId})
 * Utility: Add a section inside a board
-* Params: In request URL provide the id of the board, and as body provide the section
+* Params: In request URL provide the id of the board, and as body provide the section (name is mandatory, image is optional, position is optional)
 
 `http://localhost:5001/api/section/1`
 ```json
@@ -175,7 +175,7 @@ A section represent a column inside a board, a section contains all cards
 ```
 
 `PATCH`(http://localhost:5001/api/section)
-* Utility: Update the section (only the name can be updated)
+* Utility: Update the section (name and position can be updated)
 * Params: Section information
 ```json
 {
@@ -204,7 +204,7 @@ A section represent a column inside a board, a section contains all cards
 ### Request
 `POST`(http://localhost:5001/api/card/{sectionId})
 * Utility: Add a card inside a section
-* Params: In the request URL provide the section id where you wanna add the card, and in the body provide the card detail
+* Params: In the request URL provide the section id where you wanna add the card, and in the body provide the card detail (title is mandatory, description is mandatory, position is optional)
 `http://localhost:5001/api/card/1`
 ```json
 {
@@ -223,7 +223,7 @@ A section represent a column inside a board, a section contains all cards
 ```
 
 `PATCH`(http://localhost:5001/api/card)
-* Utility: Update a card (only title and description can be updated)
+* Utility: Update a card (title, description and position can be updated)
 * Params: In the body provide the card detail
 ```json
 {
@@ -246,3 +246,6 @@ A section represent a column inside a board, a section contains all cards
 * Params: In the request URL provide the card id
 `http://localhost:5001/api/card/1`
 * Return: Status code 200(Ok) if the card has been deleted or 400(BadRequest) if the card cannot be deleted
+
+
+### Every time a postion is given to the api, an algorithm will verify the position given and will adapt all other position if needed
