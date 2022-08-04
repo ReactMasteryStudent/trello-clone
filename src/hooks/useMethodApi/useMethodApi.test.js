@@ -94,7 +94,27 @@ test("post board", async () => {
   expect(response.result.current.isLoading).toBe(false);
   expect(response.result.current.error).toBe(null);
 });
-test.todo("patch board");
+test("patch board", async () => {
+  const idBoardToPatch = 1;
+  const newNameBoardPatch = "patched Board Name ^.^";
+  const imageBoardPatch = "https://image-patched.com";
+  const response = renderHook(() =>
+    Requests.usePatchBoard(idBoardToPatch, newNameBoardPatch, imageBoardPatch)
+  );
+  expect(response.result.current.data).toEqual({});
+  expect(response.result.current.isLoading).toBe(true);
+  expect(response.result.current.error).toBe(null);
+  await waitFor(() => sleep(delay * 2));
+  const patchedBoardExpected = {
+    name: newNameBoardPatch,
+    image: imageBoardPatch,
+  };
+
+  const receivedBoard = response.result.current.data;
+  expect(receivedBoard).toMatchSnapshot(patchedBoardExpected);
+  expect(response.result.current.isLoading).toBe(false);
+  expect(response.result.current.error).toBe(null);
+});
 test.todo("delete board");
 test.todo("post section");
 test.todo("patch section");

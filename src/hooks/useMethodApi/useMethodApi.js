@@ -45,7 +45,19 @@ export const usePostBoard = (name, image = "") => {
   return { data, isLoading, error };
 };
 
-export const usePatchBoard = (id, name, image = null) => {};
+export const usePatchBoard = (id, name, image = "") => {
+  const { data, isLoading, error, sendRequest } = useCallApi();
+  React.useEffect(() => {
+    sendRequest(BASE_URL + "/board", {
+      method: "PATCH",
+      body: { id, name, image },
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+  }, []);
+  return { data, isLoading, error };
+};
 
 export const useDeleteBoard = (id) => {};
 

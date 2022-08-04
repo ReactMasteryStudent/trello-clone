@@ -61,10 +61,11 @@ const handlers = [
     const newWorkspace = { ...DUMMY_RESPONSE, boards: newBoard };
     return res(ctx.delay(delay), ctx.status(200), ctx.json(newBoard));
   }),
-  rest.patch(BASE_URL + "/board", (req, res, ctx) => {
-    const id = req.body.id;
-    const name = req.body.name;
-    const image = req.body.image;
+  rest.patch(BASE_URL + "/board", async (req, res, ctx) => {
+    const body = await req.arrayBuffer();
+    const id = body.id;
+    const name = body.name;
+    const image = body.image;
     for (const i = 0; i < DUMMY_RESPONSE.boards.length; i++) {
       if (DUMMY_RESPONSE.boards[i].id === id) {
         //Ce test car le param image n'est pas obligatoire dans la request
