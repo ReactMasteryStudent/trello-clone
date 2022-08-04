@@ -1,52 +1,31 @@
 import React from "react";
 import { rest } from "msw";
 
-const BASE_URL = "http://localhost:5001/api";
-const DUMMY_RESPONSE = {
-  id: 1,
-  name: "Default workspace",
-  boards: [
-    {
-      id: 1,
-      name: "Trello clone",
-      image: "",
-      sections: [
-        {
-          id: 1,
-          name: "Backlog",
-          position: 1,
-          cards: [
-            {
-              id: 1,
-              title: "API Call",
-              position: 1,
-              description: "",
-            },
-            {
-              id: 2,
-              title: "Header",
-              position: 2,
-              description: "",
-            },
-          ],
-        },
-      ],
-    },
-  ],
-};
-const delay = 100;
+import {
+  SERVER_DELAY,
+  DUMMY_WORKSPACE,
+  BASE_URL,
+} from "../utils/test-utils/constants";
 
 const handlers = [
   rest.get(BASE_URL + "/workspace", (req, res, ctx) => {
-    return res(ctx.delay(delay), ctx.status(200), ctx.json(DUMMY_RESPONSE));
+    return res(
+      ctx.delay(SERVER_DELAY),
+      ctx.status(200),
+      ctx.json(DUMMY_WORKSPACE)
+    );
   }),
   rest.patch(BASE_URL + "/workspace", async (req, res, ctx) => {
     const body = await req.arrayBuffer();
     const id = body.id;
     const name = body.name;
     console.log({ id, name });
-    const newWorkspace = { ...DUMMY_RESPONSE, name: name };
-    return res(ctx.delay(delay), ctx.status(200), ctx.json(newWorkspace));
+    const newWorkspace = { ...DUMMY_WORKSPACE, name: name };
+    return res(
+      ctx.delay(SERVER_DELAY),
+      ctx.status(200),
+      ctx.json(newWorkspace)
+    );
   }),
   rest.post(BASE_URL + "/board", async (req, res, ctx) => {
     const body = await req.arrayBuffer();
@@ -57,40 +36,44 @@ const handlers = [
       name,
       image,
     };
-    const newBoards = [...DUMMY_RESPONSE.boards, newBoard];
-    const newWorkspace = { ...DUMMY_RESPONSE, boards: newBoard };
-    return res(ctx.delay(delay), ctx.status(200), ctx.json(newBoard));
+    const newBoards = [...DUMMY_WORKSPACE.boards, newBoard];
+    const newWorkspace = { ...DUMMY_WORKSPACE, boards: newBoard };
+    return res(ctx.delay(SERVER_DELAY), ctx.status(200), ctx.json(newBoard));
   }),
   rest.patch(BASE_URL + "/board", async (req, res, ctx) => {
     const body = await req.arrayBuffer();
     const id = body.id;
     const name = body.name;
     const image = body.image;
-    for (const i = 0; i < DUMMY_RESPONSE.boards.length; i++) {
-      if (DUMMY_RESPONSE.boards[i].id === id) {
+    for (const i = 0; i < DUMMY_WORKSPACE.boards.length; i++) {
+      if (DUMMY_WORKSPACE.boards[i].id === id) {
         //Ce test car le param image n'est pas obligatoire dans la request
         const updatedImage =
           image != null && image.length > 1
             ? image
-            : DUMMY_RESPONSE.boards[i].image;
+            : DUMMY_WORKSPACE.boards[i].image;
 
-        const newBoard = { ...DUMMY_RESPONSE.boards[i], name, image };
-        DUMMY_RESPONSE.boards[i] = newBoard;
-        return res(ctx.json(newBoard), ctx.status(200), ctx.delay(delay));
+        const newBoard = { ...DUMMY_WORKSPACE.boards[i], name, image };
+        DUMMY_WORKSPACE.boards[i] = newBoard;
+        return res(
+          ctx.json(newBoard),
+          ctx.status(200),
+          ctx.delay(SERVER_DELAY)
+        );
       }
     }
   }),
   rest.delete(BASE_URL + "/board/:id", (req, res, ctx) => {
     const id = req.url.searchParams.get("id");
-    const newBoards = DUMMY_RESPONSE.boards.filter((board) => {
+    const newBoards = DUMMY_WORKSPACE.boards.filter((board) => {
       return board.id !== id;
     });
-    if (newBoards && newBoards.length > 0) {
-      DUMMY_RESPONSE.boards = newBoards;
-      res(ctx.status(200), ctx.delay(delay));
+    if (newBoards !== undefined) {
+      DUMMY_WORKSPACE.boards = newBoards;
+      return res(ctx.status(200), ctx.delay(SERVER_DELAY), ctx.json(newBoards));
     } else {
       //code erreur id non reconnu
-      return res(ctx.status(400), ctx.delay(delay));
+      return res(ctx.status(400), ctx.delay(SERVER_DELAY));
     }
   }),
 ];

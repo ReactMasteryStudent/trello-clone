@@ -2,41 +2,14 @@ import Requests from "./useMethodApi";
 import { setupServer } from "msw/node";
 import { renderHook, waitFor } from "@testing-library/react";
 import handlers from "../../handlers/handlers";
+import {
+  SERVER_DELAY,
+  DUMMY_WORKSPACE,
+} from "../../utils/test-utils/constants";
 
-const DUMMY_RESPONSE = {
-  id: 1,
-  name: "Default workspace",
-  boards: [
-    {
-      id: 1,
-      name: "Trello clone",
-      image: "",
-      sections: [
-        {
-          id: 1,
-          name: "Backlog",
-          position: 1,
-          cards: [
-            {
-              id: 1,
-              title: "API Call",
-              position: 1,
-              description: "",
-            },
-            {
-              id: 2,
-              title: "Header",
-              position: 2,
-              description: "",
-            },
-          ],
-        },
-      ],
-    },
-  ],
-};
+const DUMMY_RESPONSE = DUMMY_WORKSPACE;
 const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t));
-const delay = 100;
+const delay = SERVER_DELAY;
 
 const server = setupServer(...handlers);
 
@@ -115,7 +88,16 @@ test("patch board", async () => {
   expect(response.result.current.isLoading).toBe(false);
   expect(response.result.current.error).toBe(null);
 });
-test.todo("delete board");
+test("delete board", async () => {
+  const idBoardToDelete = 1;
+  const response = renderHook(() => Requests.useDeleteBoard(idBoardToDelete));
+  expect(response.result.current.data).toEqual({});
+  expect(response.result.current.isLoading).toBe(true);
+  expect(response.result.current.error).toBe(null);
+  await waitFor(() => sleep(delay * 2));
+  expect(response.result.current.isLoading).toBe(false);
+  expect(response.result.current.error).toBe(null);
+});
 test.todo("post section");
 test.todo("patch section");
 test.todo("delete section");

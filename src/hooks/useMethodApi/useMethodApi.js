@@ -59,7 +59,19 @@ export const usePatchBoard = (id, name, image = "") => {
   return { data, isLoading, error };
 };
 
-export const useDeleteBoard = (id) => {};
+export const useDeleteBoard = (id) => {
+  const { data, isLoading, error, sendRequest } = useCallApi();
+  React.useEffect(() => {
+    sendRequest(BASE_URL + "/board/" + id, {
+      method: "DELETE",
+      body: null,
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+  }, []);
+  return { data, isLoading, error };
+};
 
 export const usePostSection = (boardId, sectionToAdd) => {};
 
