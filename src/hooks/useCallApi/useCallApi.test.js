@@ -53,9 +53,13 @@ beforeAll(() => {
 afterAll(() => {
   server.close();
 });
+beforeEach(() => {
+  server.resetHandlers();
+});
 
-test("get workspaces", async () => {
+test("fonctionnal request", async () => {
   const response = renderHook(() => useCallApi());
+  expect(response.result.current.data).toEqual({});
   expect(response.result.current.isLoading).toBe(false);
   expect(response.result.current.error).toBe(null);
   act(() => {
@@ -73,3 +77,5 @@ test("get workspaces", async () => {
   expect(response.result.current.error).toBe(null);
   expect(response.result.current.data).toEqual(DUMMY_RESPONSE);
 });
+
+test.todo("error request");

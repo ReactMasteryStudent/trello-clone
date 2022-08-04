@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React from "react";
 
 export const actions = {
   ACTION_SET_DATA: "set_data",
@@ -7,7 +7,7 @@ export const actions = {
 };
 
 const initialState = {
-  data: { test: "test" },
+  data: {},
   isLoading: false,
   error: null,
 };
@@ -37,7 +37,7 @@ const reducer = (state, action) => {
 
 const useCallApi = () => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
-  const sendRequest = async (url, options) => {
+  const sendRequest = React.useCallback(async (url, options) => {
     dispatch({ type: actions.ACTION_SET_ISLOADING, payload: true });
 
     const response = await fetch(url, {
@@ -46,13 +46,17 @@ const useCallApi = () => {
       headers: options.headers ? options.headers : {},
     });
 
-    const data = await response.json().catch((error) => {
-      dispatch({ type: actions.ACTION_SET_ERROR, payload: error });
-    });
-
-    dispatch({ type: actions.ACTION_SET_DATA, payload: data });
-    dispatch({ type: actions.ACTION_SET_ISLOADING, payload: false });
-  };
+    response
+      .json()
+      .then((value) => {
+        dispatch({ type: actions.ACTION_SET_ISLOADING, payload: false });
+        dispatch({ type: actions.ACTION_SET_DATA, payload: value });
+      })
+      .catch((error) => {
+        dispatch({ type: actions.ACTION_SET_ISLOADING, payload: false });
+        dispatch({ type: actions.ACTION_SET_ERROR, payload: error });
+      });
+  }, []);
   return {
     data: state.data,
     isLoading: state.isLoading,
