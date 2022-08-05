@@ -222,7 +222,7 @@ A section represent a column inside a board, a section contains all cards
 }
 ```
 
-`PATCH`(http://localhost:5001/api/card)
+`PATCH`(http://localhost:5001/api/card/{sectionId?})
 * Utility: Update a card (title, description and position can be updated)
 * Params: In the body provide the card detail
 ```json
