@@ -87,7 +87,19 @@ export const usePostSection = (boardId, sectionToAdd) => {
   return { data, isLoading, error };
 };
 
-export const usePatchSection = (sectionRewriteObject) => {};
+export const usePatchSection = (sectionId, newSectionName) => {
+  const { data, isLoading, error, sendRequest } = useCallApi();
+  React.useEffect(() => {
+    sendRequest(BASE_URL + "/section", {
+      method: "PATCH",
+      body: JSON.stringify({ id: sectionId, name: newSectionName }),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+  }, []);
+  return { data, isLoading, error };
+};
 
 export const useDeleteSection = (id) => {};
 

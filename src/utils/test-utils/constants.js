@@ -32,3 +32,4 @@ export const DUMMY_WORKSPACE = {
     },
   ],
 };
+export const DUMMY_SECTION_ID = 32;

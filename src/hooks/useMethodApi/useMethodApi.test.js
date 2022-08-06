@@ -5,6 +5,7 @@ import handlers from "../../handlers/handlers";
 import {
   SERVER_DELAY,
   DUMMY_WORKSPACE,
+  DUMMY_SECTION_ID,
 } from "../../utils/test-utils/constants";
 
 const DUMMY_RESPONSE = DUMMY_WORKSPACE;
@@ -114,7 +115,21 @@ test("post section", async () => {
   expect(response.result.current.error).toBe(null);
   expect(response.result.current.data).toMatchSnapshot(sectionToAdd);
 });
-test.todo("patch section");
+test("patch section", async () => {
+  const sectionId = DUMMY_SECTION_ID;
+  const newSectionName = "Implement Backend";
+  const newSectionPart = { id: sectionId, name: newSectionName };
+  const response = renderHook(() =>
+    Requests.usePatchSection(sectionId, newSectionName)
+  );
+  expect(response.result.current.data).toEqual({});
+  expect(response.result.current.isLoading).toBe(true);
+  expect(response.result.current.error).toBe(null);
+  await waitFor(() => sleep(delay * 3));
+  expect(response.result.current.isLoading).toBe(false);
+  expect(response.result.current.error).toBe(null);
+  expect(response.result.current.data).toMatchObject(newSectionPart);
+});
 test.todo("delete section");
 test.todo("post card");
 test.todo("patch card");

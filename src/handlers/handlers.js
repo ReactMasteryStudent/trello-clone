@@ -1,40 +1,12 @@
 import React from "react";
 import { rest } from "msw";
 
-import { SERVER_DELAY, BASE_URL } from "../utils/test-utils/constants";
-
-const DUMMY_WORKSPACE = {
-  id: 1,
-  name: "Default workspace",
-  boards: [
-    {
-      id: 1,
-      name: "Trello clone",
-      image: "",
-      sections: [
-        {
-          id: 1,
-          name: "Backlog",
-          position: 1,
-          cards: [
-            {
-              id: 1,
-              title: "API Call",
-              position: 1,
-              description: "",
-            },
-            {
-              id: 2,
-              title: "Header",
-              position: 2,
-              description: "",
-            },
-          ],
-        },
-      ],
-    },
-  ],
-};
+import {
+  SERVER_DELAY,
+  DUMMY_WORKSPACE,
+  BASE_URL,
+  DUMMY_SECTION_ID,
+} from "../utils/test-utils/constants";
 
 const handlers = [
   rest.get(BASE_URL + "/workspace", (req, res, ctx) => {
@@ -108,7 +80,11 @@ const handlers = [
   rest.post(BASE_URL + "/section/:id", async (req, res, ctx) => {
     const id = +req.params.id;
     const sectionToAdd = await req.json();
-    const completeSectionToAdd = { id: 32, cards: [], ...sectionToAdd };
+    const completeSectionToAdd = {
+      id: DUMMY_SECTION_ID,
+      cards: [],
+      ...sectionToAdd,
+    };
 
     for (const i = 0; i < DUMMY_WORKSPACE.boards.length; i++) {
       if (DUMMY_WORKSPACE.boards[i].id === id) {
@@ -124,6 +100,44 @@ const handlers = [
 
     //si ajout non ok return code 400
     return res(ctx.status(400), ctx.delay(SERVER_DELAY), ctx.json());
+  }),
+  rest.patch(BASE_URL + "/section", async (req, res, ctx) => {
+    const body = await req.json();
+    const sectionId = body.id;
+    const newSectionName = body.name;
+    for (
+      let boardIndex = 0;
+      boardIndex < DUMMY_WORKSPACE.boards.length;
+      boardIndex++
+    ) {
+      for (
+        let sectionIndex = 0;
+        sectionIndex < DUMMY_WORKSPACE.boards[boardIndex].sections.length;
+        sectionIndex++
+      ) {
+        if (
+          DUMMY_WORKSPACE.boards[boardIndex].sections[sectionIndex].id ===
+          sectionId
+        ) {
+          DUMMY_WORKSPACE.boards[boardIndex].sections[sectionIndex].name =
+            newSectionName;
+          const returning =
+            DUMMY_WORKSPACE.boards[boardIndex].sections[sectionIndex];
+          //code 200 ok
+          return res(
+            ctx.status(200),
+            ctx.delay(SERVER_DELAY / 2),
+            ctx.json(DUMMY_WORKSPACE.boards[boardIndex].sections[sectionIndex])
+          );
+        }
+      }
+    }
+    //code 400 non ok
+    return res(
+      ctx.status(400),
+      ctx.delay(SERVER_DELAY),
+      ctx.json({ errorMessage: "requete non résolu" })
+    );
   }),
 ];
 
