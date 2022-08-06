@@ -29,10 +29,26 @@ Object {
 }
 `;
 
+exports[`patch section 1`] = `
+Object {
+  "cards": Array [],
+  "id": 32,
+  "name": "Implement test API",
+}
+`;
+
 exports[`post board 1`] = `
 Object {
   "id": 53,
   "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHRMgFFFer5qdS8fDQ72NzTiC4qt4yKAR3kg&usqp=CAU",
   "name": "new board =)",
+}
+`;
+
+exports[`post section 1`] = `
+Object {
+  "cards": Array [],
+  "id": 32,
+  "name": "Implement test API",
 }
 `;

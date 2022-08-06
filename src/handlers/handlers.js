@@ -1,11 +1,40 @@
 import React from "react";
 import { rest } from "msw";
 
-import {
-  SERVER_DELAY,
-  DUMMY_WORKSPACE,
-  BASE_URL,
-} from "../utils/test-utils/constants";
+import { SERVER_DELAY, BASE_URL } from "../utils/test-utils/constants";
+
+const DUMMY_WORKSPACE = {
+  id: 1,
+  name: "Default workspace",
+  boards: [
+    {
+      id: 1,
+      name: "Trello clone",
+      image: "",
+      sections: [
+        {
+          id: 1,
+          name: "Backlog",
+          position: 1,
+          cards: [
+            {
+              id: 1,
+              title: "API Call",
+              position: 1,
+              description: "",
+            },
+            {
+              id: 2,
+              title: "Header",
+              position: 2,
+              description: "",
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};
 
 const handlers = [
   rest.get(BASE_URL + "/workspace", (req, res, ctx) => {
@@ -16,10 +45,9 @@ const handlers = [
     );
   }),
   rest.patch(BASE_URL + "/workspace", async (req, res, ctx) => {
-    const body = await req.arrayBuffer();
+    const body = await req.json();
     const id = body.id;
     const name = body.name;
-    console.log({ id, name });
     const newWorkspace = { ...DUMMY_WORKSPACE, name: name };
     return res(
       ctx.delay(SERVER_DELAY),
@@ -28,7 +56,7 @@ const handlers = [
     );
   }),
   rest.post(BASE_URL + "/board", async (req, res, ctx) => {
-    const body = await req.arrayBuffer();
+    const body = await req.json();
     const name = body.name;
     const image = body.image;
     const newBoard = {
@@ -41,7 +69,7 @@ const handlers = [
     return res(ctx.delay(SERVER_DELAY), ctx.status(200), ctx.json(newBoard));
   }),
   rest.patch(BASE_URL + "/board", async (req, res, ctx) => {
-    const body = await req.arrayBuffer();
+    const body = await req.json();
     const id = body.id;
     const name = body.name;
     const image = body.image;
@@ -64,17 +92,38 @@ const handlers = [
     }
   }),
   rest.delete(BASE_URL + "/board/:id", (req, res, ctx) => {
-    const id = req.url.searchParams.get("id");
+    const id = +req.params.id;
     const newBoards = DUMMY_WORKSPACE.boards.filter((board) => {
       return board.id !== id;
     });
-    if (newBoards !== undefined) {
-      DUMMY_WORKSPACE.boards = newBoards;
+    if (newBoards !== undefined && id !== null && id !== undefined) {
+      //ligne comment on to avoid modifying the dummy data for other test
+      // DUMMY_WORKSPACE.boards = newBoards;
       return res(ctx.status(200), ctx.delay(SERVER_DELAY), ctx.json(newBoards));
     } else {
       //code erreur id non reconnu
       return res(ctx.status(400), ctx.delay(SERVER_DELAY));
     }
+  }),
+  rest.post(BASE_URL + "/section/:id", async (req, res, ctx) => {
+    const id = +req.params.id;
+    const sectionToAdd = await req.json();
+    const completeSectionToAdd = { id: 32, cards: [], ...sectionToAdd };
+
+    for (const i = 0; i < DUMMY_WORKSPACE.boards.length; i++) {
+      if (DUMMY_WORKSPACE.boards[i].id === id) {
+        DUMMY_WORKSPACE.boards[i].sections.push(completeSectionToAdd);
+        //si ajout ok alors return code 200
+        return res(
+          ctx.status(200),
+          ctx.delay(SERVER_DELAY),
+          ctx.json(completeSectionToAdd)
+        );
+      }
+    }
+
+    //si ajout non ok return code 400
+    return res(ctx.status(400), ctx.delay(SERVER_DELAY), ctx.json());
   }),
 ];
 

@@ -98,7 +98,22 @@ test("delete board", async () => {
   expect(response.result.current.isLoading).toBe(false);
   expect(response.result.current.error).toBe(null);
 });
-test.todo("post section");
+test("post section", async () => {
+  const idBoard = 1;
+  const sectionToAdd = {
+    name: "Implement test API",
+  };
+  const response = renderHook(() =>
+    Requests.usePostSection(idBoard, sectionToAdd)
+  );
+  expect(response.result.current.data).toEqual({});
+  expect(response.result.current.isLoading).toBe(true);
+  expect(response.result.current.error).toBe(null);
+  await waitFor(() => sleep(delay * 2));
+  expect(response.result.current.isLoading).toBe(false);
+  expect(response.result.current.error).toBe(null);
+  expect(response.result.current.data).toMatchSnapshot(sectionToAdd);
+});
 test.todo("patch section");
 test.todo("delete section");
 test.todo("post card");

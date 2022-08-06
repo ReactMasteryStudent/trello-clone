@@ -22,7 +22,7 @@ export const usePatchWorkspace = (id, name) => {
   React.useEffect(() => {
     sendRequest(BASE_URL + "/workspace", {
       method: "PATCH",
-      body: { id, name },
+      body: JSON.stringify({ id, name }),
       headers: {
         "content-type": "application/json",
       },
@@ -36,7 +36,7 @@ export const usePostBoard = (name, image = "") => {
   React.useEffect(() => {
     sendRequest(BASE_URL + "/board", {
       method: "POST",
-      body: { name, image },
+      body: JSON.stringify({ name, image }),
       headers: {
         "content-type": "application/json",
       },
@@ -50,7 +50,7 @@ export const usePatchBoard = (id, name, image = "") => {
   React.useEffect(() => {
     sendRequest(BASE_URL + "/board", {
       method: "PATCH",
-      body: { id, name, image },
+      body: JSON.stringify({ id, name, image }),
       headers: {
         "content-type": "application/json",
       },
@@ -73,7 +73,19 @@ export const useDeleteBoard = (id) => {
   return { data, isLoading, error };
 };
 
-export const usePostSection = (boardId, sectionToAdd) => {};
+export const usePostSection = (boardId, sectionToAdd) => {
+  const { data, isLoading, error, sendRequest } = useCallApi();
+  React.useEffect(() => {
+    sendRequest(BASE_URL + "/section/" + boardId, {
+      method: "POST",
+      body: JSON.stringify(sectionToAdd),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+  }, []);
+  return { data, isLoading, error };
+};
 
 export const usePatchSection = (sectionRewriteObject) => {};
 
