@@ -101,7 +101,19 @@ export const usePatchSection = (sectionId, newSectionName) => {
   return { data, isLoading, error };
 };
 
-export const useDeleteSection = (id) => {};
+export const useDeleteSection = (id) => {
+  const { data, isLoading, error, sendRequest } = useCallApi();
+  React.useEffect(() => {
+    sendRequest(BASE_URL + "/section/" + id, {
+      method: "DELETE",
+      body: null,
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+  }, []);
+  return { data, isLoading, error };
+};
 
 export const usePostCard = (sectionId, cardDetail) => {};
 

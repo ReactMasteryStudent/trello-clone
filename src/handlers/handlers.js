@@ -139,6 +139,32 @@ const handlers = [
       ctx.json({ errorMessage: "requete non résolu" })
     );
   }),
+  rest.delete(BASE_URL + "/section/:id", async (req, res, ctx) => {
+    const idSectionToDelete = +req.params.id;
+    console.log({ idSectionToDelete });
+    for (
+      let boardIndex = 0;
+      boardIndex < DUMMY_WORKSPACE.boards.length;
+      boardIndex++
+    ) {
+      for (
+        let sectionIndex = 0;
+        sectionIndex < DUMMY_WORKSPACE.boards[boardIndex].sections.length;
+        sectionIndex++
+      ) {
+        if (
+          DUMMY_WORKSPACE.boards[boardIndex].sections[sectionIndex].id ===
+          idSectionToDelete
+        ) {
+          DUMMY_WORKSPACE.boards[boardIndex].sections.splice(sectionIndex, 1);
+          console.log("status 200");
+          return res(ctx.delay(SERVER_DELAY), ctx.status(200), ctx.json({}));
+        }
+      }
+    }
+    console.log("status 400");
+    return res(ctx.delay(SERVER_DELAY), ctx.status(400), ctx.json({}));
+  }),
 ];
 
 export default handlers;

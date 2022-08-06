@@ -8,7 +8,7 @@ import {
   DUMMY_SECTION_ID,
 } from "../../utils/test-utils/constants";
 
-const DUMMY_RESPONSE = DUMMY_WORKSPACE;
+let DUMMY_RESPONSE = DUMMY_WORKSPACE;
 const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t));
 const delay = SERVER_DELAY;
 
@@ -20,6 +20,11 @@ beforeAll(() => {
 
 afterAll(() => {
   server.close();
+});
+
+beforeEach(() => {
+  //Avoir les mêmes données pour chaque test
+  DUMMY_RESPONSE = DUMMY_WORKSPACE;
 });
 
 test("get workspace", async () => {
@@ -130,7 +135,17 @@ test("patch section", async () => {
   expect(response.result.current.error).toBe(null);
   expect(response.result.current.data).toMatchObject(newSectionPart);
 });
-test.todo("delete section");
+test("delete section", async () => {
+  const sectionId = 1;
+  const response = renderHook(() => Requests.useDeleteSection(sectionId));
+  expect(response.result.current.data).toEqual({});
+  expect(response.result.current.isLoading).toBe(true);
+  expect(response.result.current.error).toBe(null);
+  await waitFor(() => sleep(delay * 3));
+  expect(response.result.current.isLoading).toBe(false);
+  expect(response.result.current.error).toBe(null);
+  //TODO : test response status to be equal to 200
+});
 test.todo("post card");
 test.todo("patch card");
 test.todo("delete card");
