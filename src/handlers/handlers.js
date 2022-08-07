@@ -160,12 +160,10 @@ const handlers = [
         ) {
           // je delete pas pour garder l'intégrité des data de test
           // DUMMY_WORKSPACE.boards[boardIndex].sections.splice(sectionIndex, 1);
-          console.log("status 200 +");
           return res(ctx.delay(SERVER_DELAY), ctx.status(200), ctx.json({}));
         }
       }
     }
-    console.log("status 400 +");
     return res(ctx.delay(SERVER_DELAY), ctx.status(400), ctx.json({}));
   }),
   rest.post(BASE_URL + "/card/:id", async (req, res, ctx) => {
@@ -192,7 +190,6 @@ const handlers = [
             position: DUMMY_CARD_POSITION,
             ...cardToAdd,
           });
-          console.log("YES OK ------");
           //return status ok
           return res(
             ctx.delay(SERVER_DELAY),
@@ -203,12 +200,49 @@ const handlers = [
       }
     }
     //return non ok
-    console.log("NON OK ------");
     return res(
       ctx.status(400),
       ctx.delay(SERVER_DELAY),
       ctx.json({ errorMessage: "id section may be unknown" })
     );
+  }),
+  rest.delete(BASE_URL + "/card/:id", async (req, res, ctx) => {
+    const idCardToDelete = req.params.id;
+    //find the card
+    for (
+      let boardIndex = 0;
+      boardIndex < DUMMY_WORKSPACE.boards.length;
+      boardIndex++
+    ) {
+      for (
+        let sectionIndex = 0;
+        sectionIndex < DUMMY_WORKSPACE.boards[boardIndex].sections.length;
+        sectionIndex++
+      ) {
+        for (
+          let cardIndex = 0;
+          cardIndex <
+          DUMMY_WORKSPACE.boards[boardIndex].sections[sectionIndex].cards
+            .length;
+          cardIndex++
+        ) {
+          if (
+            DUMMY_WORKSPACE.boards[boardIndex].sections[sectionIndex].cards[
+              cardIndex
+            ].id === idCardToDelete
+          ) {
+            //delete the card
+            DUMMY_WORKSPACE.boards[boardIndex].sections[
+              sectionIndex
+            ].cards.splice(cardIndex, 1);
+            //return status ok
+            return res(ctx.status(200), ctx.delay(SERVER_DELAY), ctx.json({}));
+          }
+        }
+      }
+    }
+    //default : return error
+    return res(ctx.status(400), ctx.delay(SERVER_DELAY), ctx.json({}));
   }),
 ];
 

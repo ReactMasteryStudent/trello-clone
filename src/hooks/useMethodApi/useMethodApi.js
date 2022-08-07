@@ -131,7 +131,19 @@ export const usePostCard = (sectionId, cardTitle, cardDescription) => {
 
 export const usePatchCard = (cardRewriteObject) => {};
 
-export const useDeleteCard = (id) => {};
+export const useDeleteCard = (idCardToDelete) => {
+  const { data, isLoading, error, sendRequest } = useCallApi();
+  React.useEffect(() => {
+    sendRequest(BASE_URL + "/card/" + idCardToDelete, {
+      method: "DELETE",
+      body: null,
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+  }, []);
+  return { data, isLoading, error };
+};
 
 const Requests = {
   useGetWorkspace,

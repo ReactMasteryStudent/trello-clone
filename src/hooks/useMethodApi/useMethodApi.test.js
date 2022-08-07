@@ -6,6 +6,7 @@ import {
   SERVER_DELAY,
   DUMMY_WORKSPACE,
   DUMMY_SECTION_ID,
+  DUMMY_CARD_ID,
 } from "../../utils/test-utils/constants";
 
 let DUMMY_RESPONSE = DUMMY_WORKSPACE;
@@ -165,4 +166,14 @@ test("post card", async () => {
   });
 });
 test.todo("patch card");
-test.todo("delete card");
+test("delete card", async () => {
+  const idCardToDelete = 1;
+  const response = renderHook(() => Requests.useDeleteCard(idCardToDelete));
+  expect(response.result.current.data).toEqual({});
+  expect(response.result.current.isLoading).toBe(true);
+  expect(response.result.current.error).toBe(null);
+  await waitFor(() => sleep(delay * 3));
+  expect(response.result.current.isLoading).toBe(false);
+  expect(response.result.current.error).toBe(null);
+  //TODO : check response status = 200
+});
