@@ -1,0 +1,42 @@
+.list-cards {
+    background-color: #ebecf0;
+    margin-right: 0.5rem;
+    border-radius: 5px;
+    margin-top: 75px;
+  
+    .title-list {
+      padding: 1rem 1rem 0;
+    }
+  
+    .container-cards {
+      overflow-x: auto;
+      max-height: 55vh;
+      padding: 0 1rem;
+    }
+  
+    .card-container {
+      overflow-y: hidden;
+      margin: 0.5rem 0;
+    }
+  }
+
+$finalHeight: 250px;
+$finalWidth: 3 * $finalHeight;
+$scrollBarHeight: 1px;
+
+::-webkit-scrollbar {
+    width: $scrollBarHeight;
+    height: $scrollBarHeight;
+}
+
+.button-cancel {
+    background-color: none;
+    border: none;
+    cursor: pointer;
+    svg {
+      transition: color 0.3s;
+      &:hover {
+        color: #6b778c;
+      }
+    }
+  }
