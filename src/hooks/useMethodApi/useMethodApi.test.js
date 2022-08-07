@@ -146,6 +146,23 @@ test("delete section", async () => {
   expect(response.result.current.error).toBe(null);
   //TODO : test response status to be equal to 200
 });
-test.todo("post card");
+test("post card", async () => {
+  const sectionId = 1;
+  const cardTitle = "card title yolo";
+  const cardDescription = "card description yolo";
+  const response = renderHook(() =>
+    Requests.usePostCard(sectionId, cardTitle, cardDescription)
+  );
+  expect(response.result.current.data).toEqual({});
+  expect(response.result.current.isLoading).toBe(true);
+  expect(response.result.current.error).toBe(null);
+  await waitFor(() => sleep(delay * 3));
+  expect(response.result.current.isLoading).toBe(false);
+  expect(response.result.current.error).toBe(null);
+  expect(response.result.current.data).toMatchObject({
+    title: cardTitle,
+    description: cardDescription,
+  });
+});
 test.todo("patch card");
 test.todo("delete card");

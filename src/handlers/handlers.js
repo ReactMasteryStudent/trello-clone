@@ -6,6 +6,8 @@ import {
   DUMMY_WORKSPACE,
   BASE_URL,
   DUMMY_SECTION_ID,
+  DUMMY_CARD_ID,
+  DUMMY_CARD_POSITION,
 } from "../utils/test-utils/constants";
 
 const handlers = [
@@ -156,14 +158,57 @@ const handlers = [
           DUMMY_WORKSPACE.boards[boardIndex].sections[sectionIndex].id ===
           idSectionToDelete
         ) {
-          DUMMY_WORKSPACE.boards[boardIndex].sections.splice(sectionIndex, 1);
-          console.log("status 200");
+          // je delete pas pour garder l'intégrité des data de test
+          // DUMMY_WORKSPACE.boards[boardIndex].sections.splice(sectionIndex, 1);
+          console.log("status 200 +");
           return res(ctx.delay(SERVER_DELAY), ctx.status(200), ctx.json({}));
         }
       }
     }
-    console.log("status 400");
+    console.log("status 400 +");
     return res(ctx.delay(SERVER_DELAY), ctx.status(400), ctx.json({}));
+  }),
+  rest.post(BASE_URL + "/card/:id", async (req, res, ctx) => {
+    const sectionId = +req.params.id;
+    const cardToAdd = await req.json();
+    //Positionnement dans la bonne section
+    for (
+      let boardIndex = 0;
+      boardIndex < DUMMY_WORKSPACE.boards.length;
+      boardIndex++
+    ) {
+      for (
+        let sectionIndex = 0;
+        sectionIndex < DUMMY_WORKSPACE.boards[boardIndex].sections.length;
+        sectionIndex++
+      ) {
+        if (
+          DUMMY_WORKSPACE.boards[boardIndex].sections[sectionIndex].id ===
+          sectionId
+        ) {
+          //insérer card
+          DUMMY_WORKSPACE.boards[boardIndex].sections[sectionIndex].cards.push({
+            id: DUMMY_CARD_ID,
+            position: DUMMY_CARD_POSITION,
+            ...cardToAdd,
+          });
+          console.log("YES OK ------");
+          //return status ok
+          return res(
+            ctx.delay(SERVER_DELAY),
+            ctx.status(200),
+            ctx.json(cardToAdd)
+          );
+        }
+      }
+    }
+    //return non ok
+    console.log("NON OK ------");
+    return res(
+      ctx.status(400),
+      ctx.delay(SERVER_DELAY),
+      ctx.json({ errorMessage: "id section may be unknown" })
+    );
   }),
 ];
 

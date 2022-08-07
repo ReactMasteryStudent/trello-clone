@@ -115,7 +115,19 @@ export const useDeleteSection = (id) => {
   return { data, isLoading, error };
 };
 
-export const usePostCard = (sectionId, cardDetail) => {};
+export const usePostCard = (sectionId, cardTitle, cardDescription) => {
+  const { data, isLoading, error, sendRequest } = useCallApi();
+  React.useEffect(() => {
+    sendRequest(BASE_URL + "/card/" + sectionId, {
+      method: "POST",
+      body: JSON.stringify({ title: cardTitle, description: cardDescription }),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+  }, []);
+  return { data, isLoading, error };
+};
 
 export const usePatchCard = (cardRewriteObject) => {};
 
