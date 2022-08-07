@@ -206,8 +206,60 @@ const handlers = [
       ctx.json({ errorMessage: "id section may be unknown" })
     );
   }),
+  rest.patch(BASE_URL + "/card", async (req, res, ctx) => {
+    const body = await req.json();
+    const idCardToPatch = body.id;
+    const newTitle = body.title;
+    const newDescription = body.description;
+    //find the card
+    for (
+      let boardIndex = 0;
+      boardIndex < DUMMY_WORKSPACE.boards.length;
+      boardIndex++
+    ) {
+      for (
+        let sectionIndex = 0;
+        sectionIndex < DUMMY_WORKSPACE.boards[boardIndex].sections.length;
+        sectionIndex++
+      ) {
+        for (
+          let cardIndex = 0;
+          cardIndex <
+          DUMMY_WORKSPACE.boards[boardIndex].sections[sectionIndex].cards
+            .length;
+          cardIndex++
+        ) {
+          if (
+            DUMMY_WORKSPACE.boards[boardIndex].sections[sectionIndex].cards[
+              cardIndex
+            ].id === idCardToPatch
+          ) {
+            //patch the card
+            DUMMY_WORKSPACE.boards[boardIndex].sections[sectionIndex].cards[
+              cardIndex
+            ].title = newTitle;
+            DUMMY_WORKSPACE.boards[boardIndex].sections[sectionIndex].cards[
+              cardIndex
+            ].description = newDescription;
+            //ok:return status 200 + the new card
+            const patchedCard =
+              DUMMY_WORKSPACE.boards[boardIndex].sections[sectionIndex].cards[
+                cardIndex
+              ];
+            return res(
+              ctx.status(200),
+              ctx.delay(SERVER_DELAY),
+              ctx.json(patchedCard)
+            );
+          }
+        }
+      }
+    }
+    //default return error code 400
+    return res(ctx.status(400), ctx.delay(SERVER_DELAY), ctx.json({}));
+  }),
   rest.delete(BASE_URL + "/card/:id", async (req, res, ctx) => {
-    const idCardToDelete = req.params.id;
+    const idCardToDelete = +req.params.id;
     //find the card
     for (
       let boardIndex = 0;

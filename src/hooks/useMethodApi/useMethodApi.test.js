@@ -165,7 +165,26 @@ test("post card", async () => {
     description: cardDescription,
   });
 });
-test.todo("patch card");
+test("patch card", async () => {
+  const idCardToPatch = 1;
+  const newCardTitle = "new card title";
+  const newCardDescription = "new description";
+  const newCardToReceive = {
+    id: idCardToPatch,
+    title: newCardTitle,
+    description: newCardDescription,
+  };
+  const response = renderHook(() =>
+    Requests.usePatchCard(idCardToPatch, newCardTitle, newCardDescription)
+  );
+  expect(response.result.current.data).toEqual({});
+  expect(response.result.current.isLoading).toBe(true);
+  expect(response.result.current.error).toBe(null);
+  await waitFor(() => sleep(delay * 3));
+  expect(response.result.current.isLoading).toBe(false);
+  expect(response.result.current.error).toBe(null);
+  expect(response.result.current.data).toMatchObject(newCardToReceive);
+});
 test("delete card", async () => {
   const idCardToDelete = 1;
   const response = renderHook(() => Requests.useDeleteCard(idCardToDelete));
