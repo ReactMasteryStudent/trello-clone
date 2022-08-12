@@ -3,7 +3,6 @@ import { Header } from './components/Header';
 import { Route, Redirect } from "react-router-dom";
 import Index from "./pages/index/Index";
 import TabDetail from "./pages/tab-detail/TabDetail";
-import { ColumnList } from "./components/Column/ColumnList";
 
 function App() {
   return (
@@ -20,9 +19,6 @@ function App() {
           <TabDetail />
         </Route>
       </main>
-      <div className="wrapper">
-        <ColumnList />
-      </div>
     </>
     )
   }

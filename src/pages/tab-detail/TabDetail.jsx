@@ -1,6 +1,6 @@
 import React from "react";
+import { ColumnList } from "../../components/Column/ColumnList";
 //import { useParams } from "react-router-dom";
-import { Column } from "../../components/Column/ColumnBoard";
 import { HeaderBoard } from "../../components/header-board/HeaderBoard";
 
 const TabDetail = () => {
@@ -8,9 +8,10 @@ const TabDetail = () => {
   return (
     <>
       <HeaderBoard />
-      <Column />
-    </>
-      
+      <div className="wrapper">
+        <ColumnList />
+      </div>
+    </>  
   );
 };
 
