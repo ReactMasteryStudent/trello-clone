@@ -36,3 +36,11 @@
     transform: rotate(360deg);
   }
 }
+
+.wrapper {
+  padding: 0 0.5rem;
+  display: grid;
+  grid-auto-flow: column;
+  overflow: scroll;
+  width: 66%;
+}
