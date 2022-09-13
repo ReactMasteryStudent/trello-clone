@@ -38,10 +38,9 @@
 }
 
 .wrapper {
-  margin: 0 auto;
   padding: 0 0.5rem;
   display: grid;
-  min-height: calc(100vh - 5rem);
   grid-auto-flow: column;
   overflow: scroll;
+  width: 66%;
 }
