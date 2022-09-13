@@ -1,5 +1,5 @@
 import "./App.css";
-import { Header } from './components/Header';
+import { Header } from "./components/Header";
 import { Route, Redirect } from "react-router-dom";
 import Index from "./pages/index/Index";
 import TabDetail from "./pages/tab-detail/TabDetail";
@@ -20,7 +20,7 @@ function App() {
         </Route>
       </main>
     </>
-    )
-  }
+  );
+}
 
 export default App;
