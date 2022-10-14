@@ -3,8 +3,12 @@ import { Header } from "./components/Header";
 import { Route, Redirect } from "react-router-dom";
 import Index from "./pages/index/Index";
 import TabDetail from "./pages/tab-detail/TabDetail";
+import { useEffect } from "react";
 
 function App() {
+  useEffect(() => {
+    document.title = "Trello clone"
+  }, [])
   return (
     <>
       <Header />
